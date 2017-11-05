@@ -47,7 +47,7 @@ class App extends React.Component {
                 <NavLink tag={Link} to="/">Home - All Poasts</NavLink>
               </NavItem>
               <NavItem>
-                <NavLink tag={Link} to="/create-poas">Create Post</NavLink>
+                <NavLink tag={Link} to="/create-post">Create Post</NavLink>
               </NavItem>
             </Nav>
           </Collapse>
@@ -63,22 +63,30 @@ class App extends React.Component {
               <Categories categories={['react', 'redux', 'udacity']}/>
               <br/>
 
-              <Posts {...props} catTitle={'All'} posts={posts} votePost={votePost} voteComment={voteComment}/>
+              <Posts {...props} catTitle={'All'} posts={posts} votePost={votePost} deletePost={deletePost}
+                     voteComment={voteComment}/>
             </div>
           )}/>
 
           {/* Show the form to create a new post
          - pass in props so we can get to the history from Route */}
-          <Route exact path="/create-poas" render={(props) => (
+          <Route exact path="/create-post" render={(props) => (
             <CreatePost {...props} addPost={addPost} post={{}}/>
           )}/>
 
           <Route path="/edit-post/:postID" render={(props) => {
             const {postID} = props.match.params
 
-            return(<CreatePost {...props} addPost={addPost} editPost={editPost} post={posts.reduce((accum, p) => (
-              (p.id === postID) ? {...p} : accum
-            ), {})}/>)
+            return(
+              <div>
+                <h2>Categories</h2>
+                <Categories categories={['react', 'redux', 'udacity']}/>
+                <br/>
+                <CreatePost {...props} addPost={addPost} editPost={editPost} post={posts.reduce((accum, p) => (
+                  (p.id === postID) ? {...p} : accum
+                ), {})}/>
+              </div>
+            )
           }}/>
 
 
@@ -87,19 +95,37 @@ class App extends React.Component {
             const {postID} = props.match.params
             const postComments = comments[postID] || []
 
+
+
             if (isLoading){
               return (<h1> BEEEEEE beeep beep beep beep beep BEEEE Beep</h1>)
             }
-            return (<PostDetails {...props} loadComments={loadComments} deletePost={deletePost}
+            return (
+              <div>
+                <h2>Categories</h2>
+                <Categories categories={['react', 'redux', 'udacity']}/>
+                <br/>
+              <PostDetails {...props} loadComments={loadComments} deletePost={deletePost}
                                  deleteComment={deleteComment} votePost={votePost}
                                  voteComment={voteComment} comments={postComments}
-                                 posts={posts.filter((post) => post.id === postID )}/>)
+                                 posts={posts.filter((post) => post.id === postID )}/>
+              </div>
+            )
           }}/>
 
           <Route path="/categories/:cat" render={(props) => {
             const {cat} = props.match.params
-            return (<Posts {...props} catTitle={upperFirst(cat)} votePost={votePost} voteComment={voteComment}
-                           posts={posts.filter((post) => post.category === cat)} />)
+            return (
+              <div>
+                <h2>Categories</h2>
+                <Categories categories={['react', 'redux', 'udacity']}/>
+                <br/>
+                <Posts {...props} catTitle={upperFirst(cat)} votePost={votePost}
+                       voteComment={voteComment} deletePost={deletePost}
+                       posts={posts.filter((post) => post.category === cat)} />
+
+              </div>
+            )
           }}/>
 
           <Route path="/create-comment/:postID" render={(props) => {

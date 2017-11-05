@@ -41,10 +41,12 @@ export const localAddPost = (action) => {
 export const addPost = (post) => dispatch => {
   const {title, body, author, category} = post.post
   let bodyObj = {
-    'title': title,
-    'body': body,
-    'author': author,
-    'category': category,
+    title,
+    body,
+    author,
+    category,
+    voteScore: 1,
+    commentCount: 0
   }
 
   const prom = createPostAPI(bodyObj)

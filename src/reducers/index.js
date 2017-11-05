@@ -5,6 +5,47 @@ import {
 
 const initialState = {'posts': [], 'isLoading': true, 'comments': {}}
 
+/*
+TODO: Reviewers Notes (copied here in case I lose access to class):
+
+You might consider flattening the store and also using multiple reducers.
+
+ex combineReducers
+
+import { combineReducers } from 'redux'
+import { posts, categories } from '../posts/PostReducers'
+import { comments } from '../comments/CommentReducers'
+
+export default combineReducers({
+  posts,
+  categories,
+  comments
+})
+ex reducer
+
+export function posts(state = {}, action) {
+  switch(action.type) {
+    case RECEIVE_POSTS:
+      let postsObj = {}
+      let allIds = []
+      action.posts.forEach(post => {
+        postsObj[post.id] = post
+        allIds.push(post.id)
+      })
+
+      return {
+        ...state,
+        posts: postsObj,
+        allIds
+      }
+    default:
+      return state
+  }
+}
+See http://redux.js.org/docs/recipes/reducers/UsingCombineReducers.html
+
+ */
+
 export default function reducePosts (state = initialState, action) {
 
   const {posts, comments, isLoading} = state
@@ -12,6 +53,7 @@ export default function reducePosts (state = initialState, action) {
   switch (action.type){
     case ADD_POST:
       const {post} = action
+
       return {
         posts: [...posts, post],
         comments,
@@ -109,7 +151,13 @@ export default function reducePosts (state = initialState, action) {
       return {
         isLoading,
         posts: posts.map((p) => (
-          (p.id === po.id) ? {...po}: p
+          (p.id === po.id) ? {
+            ...p,
+            title: po.title,
+            body: po.body,
+            author: po.author,
+            category: po.category,
+          }: p
         )),
         comments,
       }
@@ -123,7 +171,11 @@ export default function reducePosts (state = initialState, action) {
           ...comments,
           [co.parentId]: comments[co.parentId].map((c) => {
             if(c.id === co.id) {
-              return {...co}
+              return {
+                ...c,
+                body: co.body,
+                author: co.author,
+              }
             }
             return c
           })

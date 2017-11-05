@@ -5,6 +5,10 @@ import {humanDate} from "../utils"
 // postsArr should just be one item...
 export class PostDetails extends Component {
   componentDidMount(){
+    // Don't try to load on post not found
+    if(this.props.posts.length === 0){
+      return
+    }
     this.props.loadComments({postID: this.props.posts[0].id})
 
   }
@@ -19,7 +23,14 @@ export class PostDetails extends Component {
 
   render() {
 
-    const {history, voteComment, deletePost, deleteComment} = this.props
+    const {history, votePost, voteComment, deletePost, deleteComment} = this.props
+    if(this.props.posts.length === 0){
+      return (
+        <div>
+          <h2>Error! Post not found</h2>
+        </div>
+      )
+    }
 
     const {title, body, id, timestamp, category, commentCount, deleted, voteScore, author} = this.props.posts[0]
 
@@ -27,8 +38,11 @@ export class PostDetails extends Component {
       <div>
         <h2>Post Details</h2>
         <div>
-        <Button color="success" onClick={() => history.push('/create-comment/' + id)}>Add New Post</Button>
-        <Button color="info" onClick={() => history.push('/edit-post/' + id)}>Edit Post</Button>
+        <Button color="success" onClick={() => history.push('/create-post')}>Add New Post</Button>
+          <Button color="success" onClick={() => votePost({option: 'upVote', postID: id})}>UpVote Post</Button>
+          <Button color="danger" onClick={() => votePost({option: 'downVote', postID: id})}>DownVote Post</Button>
+
+          <Button color="info" onClick={() => history.push('/edit-post/' + id)}>Edit Post</Button>
         <Button color="danger" onClick={() => {
           deletePost(id)
           history.push('/')

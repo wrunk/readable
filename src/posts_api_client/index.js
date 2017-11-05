@@ -43,6 +43,7 @@ export const createCommentAPI = (postBodyObj) => {
 
   postBodyObj['id'] = uuidv4()
   postBodyObj['timestamp'] = Date.now()
+  postBodyObj['voteScore'] = 1
 
   return fetch(urlBase + '/comments', {
     'method': 'POST',

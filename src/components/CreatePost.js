@@ -42,7 +42,7 @@ export default class CreatePost extends Component {
 
     return (
       <div>
-        <h2>Create a New Post</h2>
+        <h2>{(post.id)? 'Edit Post': 'Create a New Post'}</h2>
 
         <Form onSubmit={this.handleFormSubmit}>
           <FormGroup row>
@@ -84,7 +84,7 @@ export default class CreatePost extends Component {
 
           <FormGroup check row>
             <Col sm={{ size: 10, offset: 2 }}>
-              <Button type='submit'>Create Post</Button>
+              <Button type='submit'>{(post.id)? 'Edit Post': 'Create Post'}</Button>
             </Col>
           </FormGroup>
         </Form>

@@ -47,7 +47,7 @@ export default class Posts extends Component {
   }
 
   render(){
-    const {posts, catTitle, history, votePost} = this.props
+    const {posts, catTitle, history, votePost, editPost, deletePost} = this.props
 
     return (
       <div>
@@ -60,7 +60,7 @@ export default class Posts extends Component {
           <Button color="info" onClick={() => this.changeSort(4)} active={this.state.sortSelect === 4}>Timestamp (desc)</Button>
         </ButtonGroup>
         <br/>
-        <Button color="success" onClick={() => history.push('/create-poas')}>Add New Post</Button>
+        <Button color="success" onClick={() => history.push('/create-post')}>Add New Post</Button>
         <ListGroup>
           {this.getSortedPosts(posts).filter((p) => !(p.deleted)).map((post) => (
             <ListGroupItem key={post.id}>
@@ -73,6 +73,11 @@ export default class Posts extends Component {
               <div>
                 <Button color="success" onClick={() => votePost({option: 'upVote', postID: post.id})}>UpVote Post</Button>
                 <Button color="danger" onClick={() => votePost({option: 'downVote', postID: post.id})}>DownVote Post</Button>
+                <Button color="info" onClick={() => history.push('/edit-post/' + post.id)}>Edit Post</Button>
+                <Button color="danger" onClick={() => {
+                  deletePost(post.id)
+                  history.push('/')
+                }}>Delete Post</Button>
               </div>
             </ListGroupItem>
           ))}
