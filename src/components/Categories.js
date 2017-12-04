@@ -11,7 +11,7 @@ export const Categories = ({categories}) => {
       <ListGroup>
         {categories.map((category) => (
           <ListGroupItem key={category}>
-            <Link to={'/categories/' + category}>View Category: {category}</Link>
+            <Link to={'/' + category}>View Category: {category}</Link>
           </ListGroupItem>
         ))}
       </ListGroup>

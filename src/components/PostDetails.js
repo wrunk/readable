@@ -23,7 +23,7 @@ export class PostDetails extends Component {
 
   render() {
 
-    const {history, votePost, voteComment, deletePost, deleteComment} = this.props
+    const {history, votePost, voteComment, deletePost, deleteComment, comments} = this.props
     if(this.props.posts.length === 0){
       return (
         <div>
@@ -32,7 +32,7 @@ export class PostDetails extends Component {
       )
     }
 
-    const {title, body, id, timestamp, category, commentCount, deleted, voteScore, author} = this.props.posts[0]
+    const {title, body, id, timestamp, category, deleted, voteScore, author} = this.props.posts[0]
 
     return (
       <div>
@@ -55,7 +55,7 @@ export class PostDetails extends Component {
           <ListGroupItem key='id'>ID: {id}</ListGroupItem>
           <ListGroupItem key='timestamp'>Timestamp: {humanDate(timestamp)}</ListGroupItem>
           <ListGroupItem key='category'>Category: {category}</ListGroupItem>
-          <ListGroupItem key='commentCount'>CommentCount: {commentCount}</ListGroupItem>
+          <ListGroupItem key='commentCount'>CommentCount: {comments.length}</ListGroupItem>
           <ListGroupItem key='deleted'>Deleted?: {deleted}</ListGroupItem>
           <ListGroupItem key='voteScore'>Vote Score: {voteScore}</ListGroupItem>
           <ListGroupItem key='author'>Author: {author}</ListGroupItem>

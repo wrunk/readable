@@ -65,10 +65,10 @@ export default class Posts extends Component {
           {this.getSortedPosts(posts).filter((p) => !(p.deleted)).map((post) => (
             <ListGroupItem key={post.id}>
               <div>
-                <Link to={'/posts/' + post.id}>[{post.category}] {post.title} - By {post.author}</Link>
+                <Link to={`/${post.category}/${post.id}`}>[{post.category}] {post.title} - By {post.author}</Link>
               </div>
               <div>
-                {post.voteScore} Vote Score - {post.commentCount} Comments - Posted at {humanDate(post.timestamp)}
+                [{post.voteScore}] Vote Score - [{post.commentCount}] Comments - Posted at {humanDate(post.timestamp)}
               </div>
               <div>
                 <Button color="success" onClick={() => votePost({option: 'upVote', postID: post.id})}>UpVote Post</Button>

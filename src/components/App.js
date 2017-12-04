@@ -4,7 +4,7 @@ import {connect} from 'react-redux'
 import {addPost, getAllPosts, getComments, addComment, votePost, voteComment, deleteComment,
   deletePost, editComment, editPost} from "../actions"
 import Posts from './Posts'
-import { Route, Link, withRouter } from 'react-router-dom'
+import { Route, Link, withRouter, Switch } from 'react-router-dom'
 import CreatePost from "./CreatePost"
 import {PostDetails} from "./PostDetails"
 import {Categories} from "./Categories"
@@ -55,105 +55,109 @@ class App extends React.Component {
         <br/>
 
         <Container>
+          <Switch>
 
-          {/*Show all posts - pass in props so we can get to the history from Route */}
-          <Route exact path="/" render={(props) => (
-            <div>
-              <h2>Categories</h2>
-              <Categories categories={['react', 'redux', 'udacity']}/>
-              <br/>
 
-              <Posts {...props} catTitle={'All'} posts={posts} votePost={votePost} deletePost={deletePost}
-                     voteComment={voteComment}/>
-            </div>
-          )}/>
+            {/*Show all posts - pass in props so we can get to the history from Route */}
+            <Route exact path="/" render={(props) => (
+              <div>
+                <h2>Categories</h2>
+                <Categories categories={['react', 'redux', 'udacity']}/>
+                <br/>
 
-          {/* Show the form to create a new post
+                <Posts {...props} catTitle={'All'} posts={posts} votePost={votePost} deletePost={deletePost}
+                       voteComment={voteComment}/>
+              </div>
+            )}/>
+
+            {/* Show the form to create a new post
          - pass in props so we can get to the history from Route */}
-          <Route exact path="/create-post" render={(props) => (
-            <CreatePost {...props} addPost={addPost} post={{}}/>
-          )}/>
+            <Route exact path="/create-post" render={(props) => (
+              <CreatePost {...props} addPost={addPost} post={{}}/>
+            )}/>
 
-          <Route path="/edit-post/:postID" render={(props) => {
-            const {postID} = props.match.params
+            <Route exact path="/edit-post/:postID" render={(props) => {
+              const {postID} = props.match.params
 
-            return(
-              <div>
-                <h2>Categories</h2>
-                <Categories categories={['react', 'redux', 'udacity']}/>
-                <br/>
-                <CreatePost {...props} addPost={addPost} editPost={editPost} post={posts.reduce((accum, p) => (
-                  (p.id === postID) ? {...p} : accum
-                ), {})}/>
-              </div>
-            )
-          }}/>
+              return(
+                <div>
+                  <h2>Categories</h2>
+                  <Categories categories={['react', 'redux', 'udacity']}/>
+                  <br/>
+                  <CreatePost {...props} addPost={addPost} editPost={editPost} post={posts.reduce((accum, p) => (
+                    (p.id === postID) ? {...p} : accum
+                  ), {})}/>
+                </div>
+              )
+            }}/>
+
+            <Route exact path="/create-comment/:postID" render={(props) => {
+              const {postID} = props.match.params
+              return(<CreateComment {...props} postID={postID} addComment={addComment} />)
+            }}/>
+
+            <Route exact path="/edit-comment/:postID/:commentID" render={(props) => {
+              const {postID, commentID} = props.match.params
+              let comms = comments[postID] || []
+              // TODO this really should try to load comments or something, redirect for now.. =/
+              if(!comments[postID]){
+                history.push('/')
+                return null
+              }
+
+              return(<CreateComment {...props}
+                                    postID={postID}
+                                    comment={comms.reduce((finalC, c) => {
+                                      if(c.id === commentID){
+                                        return c
+                                      }
+                                      return finalC
+                                    }, {})}
+                                    addComment={addComment}
+                                    editComment={editComment}
+              />)
+            }}/>
 
 
-          {/* SHOW AN INDIVIDUAL POST PAGE*/}
-          <Route path="/posts/:postID" render={(props) => {
-            const {postID} = props.match.params
-            const postComments = comments[postID] || []
+            {/* SHOW AN INDIVIDUAL POST PAGE*/}
+            <Route exact path="/:category/:postID" render={(props) => {
+              const {postID, category} = props.match.params
+              const postComments = comments[postID] || []
 
 
 
-            if (isLoading){
-              return (<h1> BEEEEEE beeep beep beep beep beep BEEEE Beep</h1>)
-            }
-            return (
-              <div>
-                <h2>Categories</h2>
-                <Categories categories={['react', 'redux', 'udacity']}/>
-                <br/>
-              <PostDetails {...props} loadComments={loadComments} deletePost={deletePost}
-                                 deleteComment={deleteComment} votePost={votePost}
-                                 voteComment={voteComment} comments={postComments}
-                                 posts={posts.filter((post) => post.id === postID )}/>
-              </div>
-            )
-          }}/>
+              if (isLoading){
+                return (<h1> BEEEEEE beeep beep beep beep beep BEEEE Beep</h1>)
+              }
+              return (
+                <div>
+                  <h2>Categories</h2>
+                  <Categories categories={['react', 'redux', 'udacity']}/>
+                  <br/>
+                  <PostDetails {...props} loadComments={loadComments} deletePost={deletePost}
+                               deleteComment={deleteComment} votePost={votePost}
+                               voteComment={voteComment} comments={postComments}
+                               category={category}
+                               posts={posts.filter((post) => post.id === postID )}/>
+                </div>
+              )
+            }}/>
 
-          <Route path="/categories/:cat" render={(props) => {
-            const {cat} = props.match.params
-            return (
-              <div>
-                <h2>Categories</h2>
-                <Categories categories={['react', 'redux', 'udacity']}/>
-                <br/>
-                <Posts {...props} catTitle={upperFirst(cat)} votePost={votePost}
-                       voteComment={voteComment} deletePost={deletePost}
-                       posts={posts.filter((post) => post.category === cat)} />
+            <Route exact path="/:category" render={(props) => {
+              const {category} = props.match.params
+              return (
+                <div>
+                  <h2>Categories</h2>
+                  <Categories categories={['react', 'redux', 'udacity']}/>
+                  <br/>
+                  <Posts {...props} catTitle={upperFirst(category)} votePost={votePost}
+                         voteComment={voteComment} deletePost={deletePost}
+                         posts={posts.filter((post) => post.category === category)} />
 
-              </div>
-            )
-          }}/>
-
-          <Route path="/create-comment/:postID" render={(props) => {
-            const {postID} = props.match.params
-            return(<CreateComment {...props} postID={postID} addComment={addComment} />)
-          }}/>
-
-          <Route path="/edit-comment/:postID/:commentID" render={(props) => {
-            const {postID, commentID} = props.match.params
-            let comms = comments[postID] || []
-            // TODO this really should try to load comments or something, redirect for now.. =/
-            if(!comments[postID]){
-              history.push('/')
-              return null
-            }
-
-            return(<CreateComment {...props}
-                                  postID={postID}
-                                  comment={comms.reduce((finalC, c) => {
-                                    if(c.id === commentID){
-                                      return c
-                                    }
-                                    return finalC
-                                  }, {})}
-                                  addComment={addComment}
-                                  editComment={editComment}
-            />)
-          }}/>
+                </div>
+              )
+            }}/>
+          </Switch>
 
         </Container>
       </div>
