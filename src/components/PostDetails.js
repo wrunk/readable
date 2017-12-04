@@ -33,6 +33,7 @@ export class PostDetails extends Component {
     }
 
     const {title, body, id, timestamp, category, deleted, voteScore, author} = this.props.posts[0]
+    const commentCount = comments.reduce((accum, c) => c.deleted? accum: accum+1 , 0)
 
     return (
       <div>
@@ -55,7 +56,7 @@ export class PostDetails extends Component {
           <ListGroupItem key='id'>ID: {id}</ListGroupItem>
           <ListGroupItem key='timestamp'>Timestamp: {humanDate(timestamp)}</ListGroupItem>
           <ListGroupItem key='category'>Category: {category}</ListGroupItem>
-          <ListGroupItem key='commentCount'>CommentCount: {comments.length}</ListGroupItem>
+          <ListGroupItem key='commentCount'>CommentCount: {commentCount}</ListGroupItem>
           <ListGroupItem key='deleted'>Deleted?: {deleted}</ListGroupItem>
           <ListGroupItem key='voteScore'>Vote Score: {voteScore}</ListGroupItem>
           <ListGroupItem key='author'>Author: {author}</ListGroupItem>

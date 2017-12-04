@@ -47,7 +47,7 @@ export default class Posts extends Component {
   }
 
   render(){
-    const {posts, catTitle, history, votePost, editPost, deletePost} = this.props
+    const {posts, catTitle, history, votePost, deletePost} = this.props
 
     return (
       <div>
